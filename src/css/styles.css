@@ -121,7 +121,7 @@ a {
   text-align: center;
   color: var(--white);
   background-color: #0a1220;
-  background-image: url("../../public/images/referenciak/fooldal_referencia.png");
+  background-image: url("../images/referenciak/fooldal_referencia.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
