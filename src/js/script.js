@@ -14,6 +14,7 @@ if (toggleButton && navLinks) {
 }
 
 const counterElements = document.querySelectorAll('[data-counter]');
+const statsSection = document.querySelector('.stats');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const setCounterValue = (element, value) => {
@@ -50,25 +51,62 @@ const animateCounter = (element) => {
   requestAnimationFrame(step);
 };
 
-if (counterElements.length > 0) {
-  const counterObserver = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          return;
-        }
+const isSectionVisible = (element) => {
+  if (!element) {
+    return false;
+  }
 
-        animateCounter(entry.target);
-        observer.unobserve(entry.target);
-      });
-    },
-    {
-      threshold: 0.35,
-    }
-  );
+  const rect = element.getBoundingClientRect();
+  return rect.top <= window.innerHeight * 0.85 && rect.bottom >= 0;
+};
 
+if (counterElements.length > 0 && statsSection) {
   counterElements.forEach((counterElement) => {
     setCounterValue(counterElement, 0);
-    counterObserver.observe(counterElement);
   });
+
+  let didStartCounters = false;
+
+  const startCounters = () => {
+    if (didStartCounters) {
+      return;
+    }
+
+    didStartCounters = true;
+    counterElements.forEach((counterElement) => animateCounter(counterElement));
+  };
+
+  if (isSectionVisible(statsSection)) {
+    startCounters();
+  } else if ('IntersectionObserver' in window) {
+    const counterObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          startCounters();
+          observer.disconnect();
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -12% 0px',
+      }
+    );
+
+    counterObserver.observe(statsSection);
+  } else {
+    const onScroll = () => {
+      if (!isSectionVisible(statsSection)) {
+        return;
+      }
+
+      startCounters();
+      window.removeEventListener('scroll', onScroll);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 }
