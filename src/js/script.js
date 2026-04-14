@@ -66,6 +66,7 @@ if (counterElements.length > 0 && statsSection) {
   });
 
   let didStartCounters = false;
+  let counterObserver = null;
 
   const startCounters = () => {
     if (didStartCounters) {
@@ -73,13 +74,31 @@ if (counterElements.length > 0 && statsSection) {
     }
 
     didStartCounters = true;
+    window.removeEventListener('scroll', handleViewportCheck);
+    window.removeEventListener('resize', handleViewportCheck);
+
+    if (counterObserver) {
+      counterObserver.disconnect();
+      counterObserver = null;
+    }
+
     counterElements.forEach((counterElement) => animateCounter(counterElement));
+  };
+
+  const handleViewportCheck = () => {
+    if (isSectionVisible(statsSection)) {
+      startCounters();
+    }
   };
 
   if (isSectionVisible(statsSection)) {
     startCounters();
-  } else if ('IntersectionObserver' in window) {
-    const counterObserver = new IntersectionObserver(
+  } else {
+    window.addEventListener('scroll', handleViewportCheck, { passive: true });
+    window.addEventListener('resize', handleViewportCheck, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      counterObserver = new IntersectionObserver(
       (entries, observer) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) {
@@ -91,22 +110,12 @@ if (counterElements.length > 0 && statsSection) {
         });
       },
       {
-        threshold: 0.2,
-        rootMargin: '0px 0px -12% 0px',
+        threshold: 0,
+        rootMargin: '0px 0px -10% 0px',
       }
     );
 
     counterObserver.observe(statsSection);
-  } else {
-    const onScroll = () => {
-      if (!isSectionVisible(statsSection)) {
-        return;
-      }
-
-      startCounters();
-      window.removeEventListener('scroll', onScroll);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
+    }
   }
 }
