@@ -1,6 +1,15 @@
 const toggleButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('#navLinks');
 
+const supportsMatchMedia = typeof window.matchMedia === 'function';
+const prefersReducedMotion = supportsMatchMedia
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  : false;
+const requestFrame =
+  typeof window.requestAnimationFrame === 'function'
+    ? window.requestAnimationFrame.bind(window)
+    : (callback) => window.setTimeout(() => callback(Date.now()), 16);
+
 if (toggleButton && navLinks) {
   toggleButton.addEventListener('click', () => {
     navLinks.classList.toggle('open');
@@ -15,7 +24,6 @@ if (toggleButton && navLinks) {
 
 const counterElements = document.querySelectorAll('[data-counter]');
 const statsSection = document.querySelector('.stats');
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const setCounterValue = (element, value) => {
   const suffix = element.dataset.suffix || '';
@@ -44,11 +52,11 @@ const animateCounter = (element) => {
     setCounterValue(element, nextValue);
 
     if (progress < 1) {
-      requestAnimationFrame(step);
+      requestFrame(step);
     }
   };
 
-  requestAnimationFrame(step);
+  requestFrame(step);
 };
 
 const isSectionVisible = (element) => {
@@ -67,6 +75,7 @@ if (counterElements.length > 0 && statsSection) {
 
   let didStartCounters = false;
   let counterObserver = null;
+  let delayedStartTimer = null;
 
   const startCounters = () => {
     if (didStartCounters) {
@@ -76,6 +85,11 @@ if (counterElements.length > 0 && statsSection) {
     didStartCounters = true;
     window.removeEventListener('scroll', handleViewportCheck);
     window.removeEventListener('resize', handleViewportCheck);
+
+    if (delayedStartTimer) {
+      window.clearTimeout(delayedStartTimer);
+      delayedStartTimer = null;
+    }
 
     if (counterObserver) {
       counterObserver.disconnect();
@@ -117,5 +131,9 @@ if (counterElements.length > 0 && statsSection) {
 
     counterObserver.observe(statsSection);
     }
+
+    delayedStartTimer = window.setTimeout(() => {
+      startCounters();
+    }, 2500);
   }
 }
