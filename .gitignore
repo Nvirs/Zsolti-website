@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build/Dist
+dist/
+build/
+*.egg-info/
+# Logs
+*.log
+
+# IDE
+*.sublime-workspace
+.project
+.settings/
+
+# Local development
+.DS_Store
+local.env
