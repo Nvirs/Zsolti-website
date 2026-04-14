@@ -153,6 +153,54 @@ a {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
+.stats {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(3rem, 8vw, 6rem) 0;
+  color: var(--white);
+  background-color: #0c2337;
+  background-image: url("../images/referenciak/fooldal_referencia.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.stats-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(16, 66, 104, 0.68);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: center;
+  text-align: center;
+}
+
+.stat-item {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.stat-number {
+  margin: 0;
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+}
+
+.stat-label {
+  margin: 0;
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  font-weight: 400;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
 .btn {
   display: inline-block;
   background: var(--brand);
@@ -244,5 +292,10 @@ a {
     flex-direction: column;
     gap: 0.4rem;
     padding: 0.6rem 0;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 }
