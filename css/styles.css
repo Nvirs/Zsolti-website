@@ -488,21 +488,26 @@ a {
   }
 
   .hero-new-container {
-    flex-direction: column;
+    /* flex-direction: column; */ /* Nem kell oszlopba rendezni, mert a kép a háttérbe kerül */
+    justify-content: center;
+    align-items: center;
   }
 
   .hero-new-content {
     flex: 1;
     clip-path: none;
     width: 100%;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.85); /* Félig átlátszó háttér a jobb olvashatóságért */
   }
 
   .hero-new-image {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 300px;
-    order: 2; /* Content first, then image */
+    height: 100%;
+    z-index: 0;
   }
 
   .hero-nav-links {
