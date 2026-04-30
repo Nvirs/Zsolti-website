@@ -19,19 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Fájlok előkészítése (Mappák összevonása)
-        run: |
-          mkdir _site
-          cp -r src/html/* _site/
-          cp -r src/css _site/
-          cp -r src/js _site/
-          cp -r public/images _site/
-          cp -r public/logo _site/
-          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
+          path: '.'
           
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,5 +1,5 @@
 const toggleButton = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('#navLinks');
+const navLinks = document.querySelector('#navLinks') || document.querySelector('#heroNavLinks');
 
 const supportsMatchMedia = typeof window.matchMedia === 'function';
 const prefersReducedMotion = supportsMatchMedia
@@ -55,6 +55,14 @@ const animateCounter = (element) => {
       requestFrame(step);
     }
   };
+  while (isSectionVisible(statsSection) && startTime == perfomance.now) {
+    if (isSectionVisible(statsSection)) {
+      requestFrame(step);
+    } else {
+      setCounterValue(element, target);
+    }
+    
+  }  
 
   requestFrame(step);
 };
@@ -136,4 +144,26 @@ if (counterElements.length > 0 && statsSection) {
       startCounters();
     }, 2500);
   }
+}
+/* Image Gallery Intersection Observer */
+const galleryItems = document.querySelectorAll('.gallery-item');
+if (galleryItems.length > 0) {
+  const galleryObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        // Stagger form the ones intersecting at the same time
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, index * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  galleryItems.forEach(item => {
+    galleryObserver.observe(item);
+  });
 }
